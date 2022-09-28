@@ -1,2 +1,0 @@
-export * from "../glTF/glTFFileLoader";
-export * from "../glTF/glTFValidation";
