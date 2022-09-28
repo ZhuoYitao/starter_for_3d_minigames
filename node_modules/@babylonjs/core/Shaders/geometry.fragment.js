@@ -1,0 +1,13 @@
+// Do not edit.
+import { ShaderStore } from "../Engines/shaderStore.js";
+import "./ShadersInclude/mrtFragmentDeclaration.js";
+import "./ShadersInclude/bumpFragmentMainFunctions.js";
+import "./ShadersInclude/bumpFragmentFunctions.js";
+import "./ShadersInclude/bumpFragment.js";
+var name = "geometryPixelShader";
+var shader = "#extension GL_EXT_draw_buffers : require\n#if defined(BUMP) || !defined(NORMAL)\n#extension GL_OES_standard_derivatives : enable\n#endif\nprecision highp float;\n#ifdef BUMP\nvarying mat4 vWorldView;\nvarying vec3 vNormalW;\n#else\nvarying vec3 vNormalV;\n#endif\nvarying vec4 vViewPos;\n#if defined(POSITION) || defined(BUMP)\nvarying vec3 vPositionW;\n#endif\n#ifdef VELOCITY\nvarying vec4 vCurrentPosition;\nvarying vec4 vPreviousPosition;\n#endif\n#ifdef NEED_UV\nvarying vec2 vUV;\n#endif\n#ifdef BUMP\nuniform vec3 vBumpInfos;\nuniform vec2 vTangentSpaceParams;\n#endif\n#if defined(REFLECTIVITY) && (defined(HAS_SPECULAR) || defined(HAS_REFLECTIVITY))\nvarying vec2 vReflectivityUV;\nuniform sampler2D reflectivitySampler;\n#endif\n#ifdef ALPHATEST\nuniform sampler2D diffuseSampler;\n#endif\n#include<mrtFragmentDeclaration>[RENDER_TARGET_COUNT]\n#include<bumpFragmentMainFunctions>\n#include<bumpFragmentFunctions>\nvoid main() {\n#ifdef ALPHATEST\nif (texture2D(diffuseSampler,vUV).a<0.4)\ndiscard;\n#endif\nvec3 normalOutput;\n#ifdef BUMP\nvec3 normalW=normalize(vNormalW);\n#include<bumpFragment>\nnormalOutput=normalize(vec3(vWorldView*vec4(normalW,0.0)));\n#else\nnormalOutput=normalize(vNormalV);\n#endif\n#ifdef PREPASS\n#ifdef PREPASS_DEPTH\ngl_FragData[DEPTH_INDEX]=vec4(vViewPos.z/vViewPos.w,0.0,0.0,1.0);\n#endif\n#ifdef PREPASS_NORMAL\ngl_FragData[NORMAL_INDEX]=vec4(normalOutput,1.0);\n#endif\n#else\ngl_FragData[0]=vec4(vViewPos.z/vViewPos.w,0.0,0.0,1.0);\ngl_FragData[1]=vec4(normalOutput,1.0);\n#endif\n#ifdef POSITION\ngl_FragData[POSITION_INDEX]=vec4(vPositionW,1.0);\n#endif\n#ifdef VELOCITY\nvec2 a=(vCurrentPosition.xy/vCurrentPosition.w)*0.5+0.5;\nvec2 b=(vPreviousPosition.xy/vPreviousPosition.w)*0.5+0.5;\nvec2 velocity=abs(a-b);\nvelocity=vec2(pow(velocity.x,1.0/3.0),pow(velocity.y,1.0/3.0))*sign(a-b)*0.5+0.5;\ngl_FragData[VELOCITY_INDEX]=vec4(velocity,0.0,1.0);\n#endif\n#ifdef REFLECTIVITY\n#ifdef HAS_SPECULAR\nvec4 reflectivity=texture2D(reflectivitySampler,vReflectivityUV);\n#elif HAS_REFLECTIVITY\nvec4 reflectivity=vec4(texture2D(reflectivitySampler,vReflectivityUV).rgb,1.0);\n#else\nvec4 reflectivity=vec4(0.0,0.0,0.0,1.0);\n#endif\ngl_FragData[REFLECTIVITY_INDEX]=reflectivity;\n#endif\n}\n";
+// Sideeffect
+ShaderStore.ShadersStore[name] = shader;
+/** @hidden */
+export var geometryPixelShader = { name: name, shader: shader };
+//# sourceMappingURL=geometry.fragment.js.map

@@ -1,0 +1,94 @@
+import { VirtualJoystick, JoystickAxis } from "../../Misc/virtualJoystick.js";
+import { CameraInputTypes } from "../../Cameras/cameraInputsManager.js";
+import { Matrix, Vector3 } from "../../Maths/math.vector.js";
+import { FreeCameraInputsManager } from "../../Cameras/freeCameraInputsManager.js";
+/**
+ * Add virtual joystick input support to the input manager.
+ * @returns the current input manager
+ */
+FreeCameraInputsManager.prototype.addVirtualJoystick = function () {
+    this.add(new FreeCameraVirtualJoystickInput());
+    return this;
+};
+/**
+ * Manage the Virtual Joystick inputs to control the movement of a free camera.
+ * @see https://doc.babylonjs.com/how_to/customizing_camera_inputs
+ */
+var FreeCameraVirtualJoystickInput = /** @class */ (function () {
+    function FreeCameraVirtualJoystickInput() {
+    }
+    /**
+     * Gets the left stick of the virtual joystick.
+     * @returns The virtual Joystick
+     */
+    FreeCameraVirtualJoystickInput.prototype.getLeftJoystick = function () {
+        return this._leftjoystick;
+    };
+    /**
+     * Gets the right stick of the virtual joystick.
+     * @returns The virtual Joystick
+     */
+    FreeCameraVirtualJoystickInput.prototype.getRightJoystick = function () {
+        return this._rightjoystick;
+    };
+    /**
+     * Update the current camera state depending on the inputs that have been used this frame.
+     * This is a dynamically created lambda to avoid the performance penalty of looping for inputs in the render loop.
+     */
+    FreeCameraVirtualJoystickInput.prototype.checkInputs = function () {
+        if (this._leftjoystick) {
+            var camera = this.camera;
+            var speed = camera._computeLocalCameraSpeed() * 50;
+            var cameraTransform = Matrix.RotationYawPitchRoll(camera.rotation.y, camera.rotation.x, 0);
+            var deltaTransform = Vector3.TransformCoordinates(new Vector3(this._leftjoystick.deltaPosition.x * speed, this._leftjoystick.deltaPosition.y * speed, this._leftjoystick.deltaPosition.z * speed), cameraTransform);
+            camera.cameraDirection = camera.cameraDirection.add(deltaTransform);
+            camera.cameraRotation = camera.cameraRotation.addVector3(this._rightjoystick.deltaPosition);
+            if (!this._leftjoystick.pressed) {
+                this._leftjoystick.deltaPosition = this._leftjoystick.deltaPosition.scale(0.9);
+            }
+            if (!this._rightjoystick.pressed) {
+                this._rightjoystick.deltaPosition = this._rightjoystick.deltaPosition.scale(0.9);
+            }
+        }
+    };
+    /**
+     * Attach the input controls to a specific dom element to get the input from.
+     */
+    FreeCameraVirtualJoystickInput.prototype.attachControl = function () {
+        this._leftjoystick = new VirtualJoystick(true);
+        this._leftjoystick.setAxisForUpDown(JoystickAxis.Z);
+        this._leftjoystick.setAxisForLeftRight(JoystickAxis.X);
+        this._leftjoystick.setJoystickSensibility(0.15);
+        this._rightjoystick = new VirtualJoystick(false);
+        this._rightjoystick.setAxisForUpDown(JoystickAxis.X);
+        this._rightjoystick.setAxisForLeftRight(JoystickAxis.Y);
+        this._rightjoystick.reverseUpDown = true;
+        this._rightjoystick.setJoystickSensibility(0.05);
+        this._rightjoystick.setJoystickColor("yellow");
+    };
+    /**
+     * Detach the current controls from the specified dom element.
+     */
+    FreeCameraVirtualJoystickInput.prototype.detachControl = function () {
+        this._leftjoystick.releaseCanvas();
+        this._rightjoystick.releaseCanvas();
+    };
+    /**
+     * Gets the class name of the current input.
+     * @returns the class name
+     */
+    FreeCameraVirtualJoystickInput.prototype.getClassName = function () {
+        return "FreeCameraVirtualJoystickInput";
+    };
+    /**
+     * Get the friendly name associated with the input class.
+     * @returns the input friendly name
+     */
+    FreeCameraVirtualJoystickInput.prototype.getSimpleName = function () {
+        return "virtualJoystick";
+    };
+    return FreeCameraVirtualJoystickInput;
+}());
+export { FreeCameraVirtualJoystickInput };
+CameraInputTypes["FreeCameraVirtualJoystickInput"] = FreeCameraVirtualJoystickInput;
+//# sourceMappingURL=freeCameraVirtualJoystickInput.js.map

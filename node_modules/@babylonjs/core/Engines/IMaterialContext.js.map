@@ -1,0 +1,1 @@
+{"version":3,"file":"IMaterialContext.js","sourceRoot":"","sources":["../../../../../lts/core/generated/Engines/IMaterialContext.ts"],"names":[],"mappings":"","sourcesContent":["/** @hidden */\r\nexport interface IMaterialContext {\r\n    uniqueId: number;\r\n\r\n    reset(): void;\r\n}\r\n"]}

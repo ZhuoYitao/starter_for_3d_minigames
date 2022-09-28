@@ -1,0 +1,9 @@
+// Do not edit.
+import { ShaderStore } from "../../Engines/shaderStore.js";
+var name = "clipPlaneFragmentDeclaration2";
+var shader = "#ifdef CLIPPLANE\nin float fClipDistance;\n#endif\n#ifdef CLIPPLANE2\nin float fClipDistance2;\n#endif\n#ifdef CLIPPLANE3\nin float fClipDistance3;\n#endif\n#ifdef CLIPPLANE4\nin float fClipDistance4;\n#endif\n#ifdef CLIPPLANE5\nin float fClipDistance5;\n#endif\n#ifdef CLIPPLANE6\nin float fClipDistance6;\n#endif\n";
+// Sideeffect
+ShaderStore.IncludesShadersStore[name] = shader;
+/** @hidden */
+export var clipPlaneFragmentDeclaration2 = { name: name, shader: shader };
+//# sourceMappingURL=clipPlaneFragmentDeclaration2.js.map

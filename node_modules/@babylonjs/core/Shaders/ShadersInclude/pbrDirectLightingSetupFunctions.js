@@ -1,0 +1,9 @@
+// Do not edit.
+import { ShaderStore } from "../../Engines/shaderStore.js";
+var name = "pbrDirectLightingSetupFunctions";
+var shader = "struct preLightingInfo\n{\nvec3 lightOffset;\nfloat lightDistanceSquared;\nfloat lightDistance;\nfloat attenuation;\nvec3 L;\nvec3 H;\nfloat NdotV;\nfloat NdotLUnclamped;\nfloat NdotL;\nfloat VdotH;\nfloat roughness;\n#ifdef IRIDESCENCE\nfloat iridescenceIntensity;\n#endif\n};\npreLightingInfo computePointAndSpotPreLightingInfo(vec4 lightData,vec3 V,vec3 N) {\npreLightingInfo result;\nresult.lightOffset=lightData.xyz-vPositionW;\nresult.lightDistanceSquared=dot(result.lightOffset,result.lightOffset);\nresult.lightDistance=sqrt(result.lightDistanceSquared);\nresult.L=normalize(result.lightOffset);\nresult.H=normalize(V+result.L);\nresult.VdotH=saturate(dot(V,result.H));\nresult.NdotLUnclamped=dot(N,result.L);\nresult.NdotL=saturateEps(result.NdotLUnclamped);\nreturn result;\n}\npreLightingInfo computeDirectionalPreLightingInfo(vec4 lightData,vec3 V,vec3 N) {\npreLightingInfo result;\nresult.lightDistance=length(-lightData.xyz);\nresult.L=normalize(-lightData.xyz);\nresult.H=normalize(V+result.L);\nresult.VdotH=saturate(dot(V,result.H));\nresult.NdotLUnclamped=dot(N,result.L);\nresult.NdotL=saturateEps(result.NdotLUnclamped);\nreturn result;\n}\npreLightingInfo computeHemisphericPreLightingInfo(vec4 lightData,vec3 V,vec3 N) {\npreLightingInfo result;\nresult.NdotL=dot(N,lightData.xyz)*0.5+0.5;\nresult.NdotL=saturateEps(result.NdotL);\nresult.NdotLUnclamped=result.NdotL;\n#ifdef SPECULARTERM\nresult.L=normalize(lightData.xyz);\nresult.H=normalize(V+result.L);\nresult.VdotH=saturate(dot(V,result.H));\n#endif\nreturn result;\n}";
+// Sideeffect
+ShaderStore.IncludesShadersStore[name] = shader;
+/** @hidden */
+export var pbrDirectLightingSetupFunctions = { name: name, shader: shader };
+//# sourceMappingURL=pbrDirectLightingSetupFunctions.js.map

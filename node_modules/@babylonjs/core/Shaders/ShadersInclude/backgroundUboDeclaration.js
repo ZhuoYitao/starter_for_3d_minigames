@@ -1,0 +1,10 @@
+// Do not edit.
+import { ShaderStore } from "../../Engines/shaderStore.js";
+import "./sceneUboDeclaration.js";
+var name = "backgroundUboDeclaration";
+var shader = "layout(std140,column_major) uniform;\nuniform Material\n{\nuniform vec4 vPrimaryColor;\nuniform vec4 vPrimaryColorShadow;\nuniform vec2 vDiffuseInfos;\nuniform vec2 vReflectionInfos;\nuniform mat4 diffuseMatrix;\nuniform mat4 reflectionMatrix;\nuniform vec3 vReflectionMicrosurfaceInfos;\nuniform float fFovMultiplier;\nuniform float pointSize;\nuniform float shadowLevel;\nuniform float alpha;\n#if defined(REFLECTIONFRESNEL) || defined(OPACITYFRESNEL)\nuniform vec3 vBackgroundCenter;\n#endif\n#ifdef REFLECTIONFRESNEL\nuniform vec4 vReflectionControl;\n#endif\n};\n#include<sceneUboDeclaration>\n";
+// Sideeffect
+ShaderStore.IncludesShadersStore[name] = shader;
+/** @hidden */
+export var backgroundUboDeclaration = { name: name, shader: shader };
+//# sourceMappingURL=backgroundUboDeclaration.js.map

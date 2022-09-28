@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../../../lts/core/generated/Meshes/Compression/index.ts"],"names":[],"mappings":"AAAA,cAAc,oBAAoB,CAAC;AACnC,cAAc,sBAAsB,CAAC","sourcesContent":["export * from \"./dracoCompression\";\r\nexport * from \"./meshoptCompression\";\r\n"]}

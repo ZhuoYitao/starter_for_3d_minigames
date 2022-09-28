@@ -1,0 +1,9 @@
+// Do not edit.
+import { ShaderStore } from "../../Engines/shaderStore.js";
+var name = "packingFunctions";
+var shader = "vec4 pack(float depth)\n{\nconst vec4 bit_shift=vec4(255.0*255.0*255.0,255.0*255.0,255.0,1.0);\nconst vec4 bit_mask=vec4(0.0,1.0/255.0,1.0/255.0,1.0/255.0);\nvec4 res=fract(depth*bit_shift);\nres-=res.xxyz*bit_mask;\nreturn res;\n}\nfloat unpack(vec4 color)\n{\nconst vec4 bit_shift=vec4(1.0/(255.0*255.0*255.0),1.0/(255.0*255.0),1.0/255.0,1.0);\nreturn dot(color,bit_shift);\n}";
+// Sideeffect
+ShaderStore.IncludesShadersStore[name] = shader;
+/** @hidden */
+export var packingFunctions = { name: name, shader: shader };
+//# sourceMappingURL=packingFunctions.js.map

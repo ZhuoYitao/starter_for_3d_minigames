@@ -1,3 +1,9 @@
 {
-    "deviceOrientation": "portrait"
+    "deviceOrientation": "landscape",
+    "subpackages": [
+        {
+            "name": "demo",
+            "root": "demo_babylon"
+        }
+    ]
 }

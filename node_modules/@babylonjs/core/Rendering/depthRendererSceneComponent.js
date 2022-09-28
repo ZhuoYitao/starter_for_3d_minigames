@@ -1,0 +1,107 @@
+import { Scene } from "../scene.js";
+import { DepthRenderer } from "./depthRenderer.js";
+
+import { SceneComponentConstants } from "../sceneComponent.js";
+Scene.prototype.enableDepthRenderer = function (camera, storeNonLinearDepth, force32bitsFloat) {
+    if (storeNonLinearDepth === void 0) { storeNonLinearDepth = false; }
+    if (force32bitsFloat === void 0) { force32bitsFloat = false; }
+    camera = camera || this.activeCamera;
+    if (!camera) {
+        throw "No camera available to enable depth renderer";
+    }
+    if (!this._depthRenderer) {
+        this._depthRenderer = {};
+    }
+    if (!this._depthRenderer[camera.id]) {
+        var supportFullfloat = !!this.getEngine().getCaps().textureFloatRender;
+        var textureType = 0;
+        if (this.getEngine().getCaps().textureHalfFloatRender && (!force32bitsFloat || !supportFullfloat)) {
+            textureType = 2;
+        }
+        else if (supportFullfloat) {
+            textureType = 1;
+        }
+        else {
+            textureType = 0;
+        }
+        this._depthRenderer[camera.id] = new DepthRenderer(this, textureType, camera, storeNonLinearDepth);
+    }
+    return this._depthRenderer[camera.id];
+};
+Scene.prototype.disableDepthRenderer = function (camera) {
+    camera = camera || this.activeCamera;
+    if (!camera || !this._depthRenderer || !this._depthRenderer[camera.id]) {
+        return;
+    }
+    this._depthRenderer[camera.id].dispose();
+};
+/**
+ * Defines the Depth Renderer scene component responsible to manage a depth buffer useful
+ * in several rendering techniques.
+ */
+var DepthRendererSceneComponent = /** @class */ (function () {
+    /**
+     * Creates a new instance of the component for the given scene
+     * @param scene Defines the scene to register the component in
+     */
+    function DepthRendererSceneComponent(scene) {
+        /**
+         * The component name helpful to identify the component in the list of scene components.
+         */
+        this.name = SceneComponentConstants.NAME_DEPTHRENDERER;
+        this.scene = scene;
+    }
+    /**
+     * Registers the component in a given scene
+     */
+    DepthRendererSceneComponent.prototype.register = function () {
+        this.scene._gatherRenderTargetsStage.registerStep(SceneComponentConstants.STEP_GATHERRENDERTARGETS_DEPTHRENDERER, this, this._gatherRenderTargets);
+        this.scene._gatherActiveCameraRenderTargetsStage.registerStep(SceneComponentConstants.STEP_GATHERACTIVECAMERARENDERTARGETS_DEPTHRENDERER, this, this._gatherActiveCameraRenderTargets);
+    };
+    /**
+     * Rebuilds the elements related to this component in case of
+     * context lost for instance.
+     */
+    DepthRendererSceneComponent.prototype.rebuild = function () {
+        // Nothing to do for this component
+    };
+    /**
+     * Disposes the component and the associated resources
+     */
+    DepthRendererSceneComponent.prototype.dispose = function () {
+        for (var key in this.scene._depthRenderer) {
+            this.scene._depthRenderer[key].dispose();
+        }
+    };
+    DepthRendererSceneComponent.prototype._gatherRenderTargets = function (renderTargets) {
+        if (this.scene._depthRenderer) {
+            for (var key in this.scene._depthRenderer) {
+                var depthRenderer = this.scene._depthRenderer[key];
+                if (depthRenderer.enabled && !depthRenderer.useOnlyInActiveCamera) {
+                    renderTargets.push(depthRenderer.getDepthMap());
+                }
+            }
+        }
+    };
+    DepthRendererSceneComponent.prototype._gatherActiveCameraRenderTargets = function (renderTargets) {
+        if (this.scene._depthRenderer) {
+            for (var key in this.scene._depthRenderer) {
+                var depthRenderer = this.scene._depthRenderer[key];
+                if (depthRenderer.enabled && depthRenderer.useOnlyInActiveCamera && this.scene.activeCamera.id === key) {
+                    renderTargets.push(depthRenderer.getDepthMap());
+                }
+            }
+        }
+    };
+    return DepthRendererSceneComponent;
+}());
+export { DepthRendererSceneComponent };
+DepthRenderer._SceneComponentInitialization = function (scene) {
+    // Register the G Buffer component to the scene.
+    var component = scene._getComponent(SceneComponentConstants.NAME_DEPTHRENDERER);
+    if (!component) {
+        component = new DepthRendererSceneComponent(scene);
+        scene._addComponent(component);
+    }
+};
+//# sourceMappingURL=depthRendererSceneComponent.js.map

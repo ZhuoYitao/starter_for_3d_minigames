@@ -1,8 +1,15 @@
-import './js/libs/adaptor/index'
-import './js/libs/symbol'
-import DemoBabylon from "./js/demo_babylon/index";
-import DemoThree from "./js/demo_three/index";
+import "./js/wxhelper";
+import './js/adaptor/index'
+// import './js/adaptorSimple/index'
+// import './js/adaptorSimplified/index'
+// import "./demo_babylon/game"
 
-const demo = new DemoBabylon();
-// const demo = new DemoThree();
-demo.run();
+wx.loadSubpackage({
+  name: 'demo', // name 可以填 name 或者 root
+  success: function(res) {
+    // 分包加载成功后通过 success 回调
+  },
+  fail: function(res) {
+    // 分包加载失败通过 fail 回调
+  }
+})

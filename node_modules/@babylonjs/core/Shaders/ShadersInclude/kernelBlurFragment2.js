@@ -1,0 +1,9 @@
+// Do not edit.
+import { ShaderStore } from "../../Engines/shaderStore.js";
+var name = "kernelBlurFragment2";
+var shader = "#ifdef DOF\nfactor=sampleCoC(sampleCenter+delta*KERNEL_DEP_OFFSET{X});\ncomputedWeight=KERNEL_DEP_WEIGHT{X}*factor;\nsumOfWeights+=computedWeight;\n#else\ncomputedWeight=KERNEL_DEP_WEIGHT{X};\n#endif\n#ifdef PACKEDFLOAT\nblend+=unpack(texture2D(textureSampler,sampleCenter+delta*KERNEL_DEP_OFFSET{X}))*computedWeight;\n#else\nblend+=texture2D(textureSampler,sampleCenter+delta*KERNEL_DEP_OFFSET{X})*computedWeight;\n#endif\n";
+// Sideeffect
+ShaderStore.IncludesShadersStore[name] = shader;
+/** @hidden */
+export var kernelBlurFragment2 = { name: name, shader: shader };
+//# sourceMappingURL=kernelBlurFragment2.js.map

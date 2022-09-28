@@ -1,0 +1,9 @@
+// Do not edit.
+import { ShaderStore } from "../Engines/shaderStore.js";
+var name = "sharpenPixelShader";
+var shader = "varying vec2 vUV;\nuniform sampler2D textureSampler;\nuniform vec2 screenSize;\nuniform vec2 sharpnessAmounts;\n#define CUSTOM_FRAGMENT_DEFINITIONS\nvoid main(void)\n{\nvec2 onePixel=vec2(1.0,1.0)/screenSize;\nvec4 color=texture2D(textureSampler,vUV);\nvec4 edgeDetection=texture2D(textureSampler,vUV+onePixel*vec2(0,-1)) +\ntexture2D(textureSampler,vUV+onePixel*vec2(-1,0)) +\ntexture2D(textureSampler,vUV+onePixel*vec2(1,0)) +\ntexture2D(textureSampler,vUV+onePixel*vec2(0,1)) -\ncolor*4.0;\ngl_FragColor=max(vec4(color.rgb*sharpnessAmounts.y,color.a)-(sharpnessAmounts.x*vec4(edgeDetection.rgb,0)),0.);\n}";
+// Sideeffect
+ShaderStore.ShadersStore[name] = shader;
+/** @hidden */
+export var sharpenPixelShader = { name: name, shader: shader };
+//# sourceMappingURL=sharpen.fragment.js.map

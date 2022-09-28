@@ -1,0 +1,32 @@
+import "./ShadersInclude/defaultFragmentDeclaration";
+import "./ShadersInclude/defaultUboDeclaration";
+import "./ShadersInclude/prePassDeclaration";
+import "./ShadersInclude/oitDeclaration";
+import "./ShadersInclude/mainUVVaryingDeclaration";
+import "./ShadersInclude/helperFunctions";
+import "./ShadersInclude/lightFragmentDeclaration";
+import "./ShadersInclude/lightUboDeclaration";
+import "./ShadersInclude/lightsFragmentFunctions";
+import "./ShadersInclude/shadowsFragmentFunctions";
+import "./ShadersInclude/samplerFragmentDeclaration";
+import "./ShadersInclude/fresnelFunction";
+import "./ShadersInclude/reflectionFunction";
+import "./ShadersInclude/imageProcessingDeclaration";
+import "./ShadersInclude/imageProcessingFunctions";
+import "./ShadersInclude/bumpFragmentMainFunctions";
+import "./ShadersInclude/bumpFragmentFunctions";
+import "./ShadersInclude/clipPlaneFragmentDeclaration";
+import "./ShadersInclude/logDepthDeclaration";
+import "./ShadersInclude/fogFragmentDeclaration";
+import "./ShadersInclude/oitFragment";
+import "./ShadersInclude/clipPlaneFragment";
+import "./ShadersInclude/bumpFragment";
+import "./ShadersInclude/depthPrePass";
+import "./ShadersInclude/lightFragment";
+import "./ShadersInclude/logDepthFragment";
+import "./ShadersInclude/fogFragment";
+/** @hidden */
+export declare const defaultPixelShader: {
+    name: string;
+    shader: string;
+};

@@ -1,0 +1,44 @@
+import { __extends } from "tslib";
+import { Camera } from "../../Cameras/camera.js";
+import { FreeCamera } from "../../Cameras/freeCamera.js";
+import { Vector3 } from "../../Maths/math.vector.js";
+import { Node } from "../../node.js";
+import { setStereoscopicRigMode } from "../RigModes/stereoscopicRigMode.js";
+Node.AddNodeConstructor("StereoscopicFreeCamera", function (name, scene, options) {
+    return function () { return new StereoscopicFreeCamera(name, Vector3.Zero(), options.interaxial_distance, options.isStereoscopicSideBySide, scene); };
+});
+/**
+ * Camera used to simulate stereoscopic rendering (based on FreeCamera)
+ * @see https://doc.babylonjs.com/features/cameras
+ */
+var StereoscopicFreeCamera = /** @class */ (function (_super) {
+    __extends(StereoscopicFreeCamera, _super);
+    /**
+     * Creates a new StereoscopicFreeCamera
+     * @param name defines camera name
+     * @param position defines initial position
+     * @param interaxialDistance defines distance between each color axis
+     * @param isStereoscopicSideBySide defines is stereoscopic is done side by side or over under
+     * @param scene defines the hosting scene
+     */
+    function StereoscopicFreeCamera(name, position, interaxialDistance, isStereoscopicSideBySide, scene) {
+        var _this = _super.call(this, name, position, scene) || this;
+        _this._setRigMode = setStereoscopicRigMode.bind(null, _this);
+        _this.interaxialDistance = interaxialDistance;
+        _this.isStereoscopicSideBySide = isStereoscopicSideBySide;
+        _this.setCameraRigMode(isStereoscopicSideBySide ? Camera.RIG_MODE_STEREOSCOPIC_SIDEBYSIDE_PARALLEL : Camera.RIG_MODE_STEREOSCOPIC_OVERUNDER, {
+            interaxialDistance: interaxialDistance,
+        });
+        return _this;
+    }
+    /**
+     * Gets camera class name
+     * @returns StereoscopicFreeCamera
+     */
+    StereoscopicFreeCamera.prototype.getClassName = function () {
+        return "StereoscopicFreeCamera";
+    };
+    return StereoscopicFreeCamera;
+}(FreeCamera));
+export { StereoscopicFreeCamera };
+//# sourceMappingURL=stereoscopicFreeCamera.js.map

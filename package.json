@@ -1,0 +1,23 @@
+{
+  "name": "starter_for_3d_minigames",
+  "version": "1.0.0",
+  "description": "微信小游戏 starter（for 3D 游戏）。提供了 Web adaptor，跑通了 Babylon.js、Three.js。",
+  "main": "game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZhuoYitao/starter_for_3d_minigames.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZhuoYitao/starter_for_3d_minigames/issues"
+  },
+  "homepage": "https://github.com/ZhuoYitao/starter_for_3d_minigames#readme",
+  "dependencies": {
+    "@babylonjs/loaders": "^5.5.6",
+    "bson": "^4.7.0"
+  }
+}

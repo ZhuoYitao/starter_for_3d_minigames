@@ -1,0 +1,50 @@
+import { WebGPUEngine } from "../../webgpuEngine.js";
+import { WebGPURenderItemBeginOcclusionQuery, WebGPURenderItemEndOcclusionQuery } from "../webgpuBundleList.js";
+WebGPUEngine.prototype.getGPUFrameTimeCounter = function () {
+    return this._timestampQuery.gpuFrameTimeCounter;
+};
+WebGPUEngine.prototype.captureGPUFrameTime = function (value) {
+    this._timestampQuery.enable = value && !!this._caps.timerQuery;
+};
+WebGPUEngine.prototype.createQuery = function () {
+    return this._occlusionQuery.createQuery();
+};
+WebGPUEngine.prototype.deleteQuery = function (query) {
+    this._occlusionQuery.deleteQuery(query);
+    return this;
+};
+WebGPUEngine.prototype.isQueryResultAvailable = function (query) {
+    return this._occlusionQuery.isQueryResultAvailable(query);
+};
+WebGPUEngine.prototype.getQueryResult = function (query) {
+    return this._occlusionQuery.getQueryResult(query);
+};
+WebGPUEngine.prototype.beginOcclusionQuery = function (algorithmType, query) {
+    var _a;
+    if (this.compatibilityMode) {
+        if (this._occlusionQuery.canBeginQuery) {
+            (_a = this._currentRenderPass) === null || _a === void 0 ? void 0 : _a.beginOcclusionQuery(query);
+            return true;
+        }
+    }
+    else {
+        var renderPassIndex = this._getCurrentRenderPassIndex();
+        var bundleList = renderPassIndex === 0 ? this._bundleList : this._bundleListRenderTarget;
+        bundleList.addItem(new WebGPURenderItemBeginOcclusionQuery(query));
+        return true;
+    }
+    return false;
+};
+WebGPUEngine.prototype.endOcclusionQuery = function () {
+    var _a;
+    if (this.compatibilityMode) {
+        (_a = this._currentRenderPass) === null || _a === void 0 ? void 0 : _a.endOcclusionQuery();
+    }
+    else {
+        var renderPassIndex = this._getCurrentRenderPassIndex();
+        var bundleList = renderPassIndex === 0 ? this._bundleList : this._bundleListRenderTarget;
+        bundleList.addItem(new WebGPURenderItemEndOcclusionQuery());
+    }
+    return this;
+};
+//# sourceMappingURL=engine.query.js.map

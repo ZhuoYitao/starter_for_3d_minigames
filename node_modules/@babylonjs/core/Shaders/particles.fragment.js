@@ -1,0 +1,14 @@
+// Do not edit.
+import { ShaderStore } from "../Engines/shaderStore.js";
+import "./ShadersInclude/clipPlaneFragmentDeclaration.js";
+import "./ShadersInclude/imageProcessingDeclaration.js";
+import "./ShadersInclude/helperFunctions.js";
+import "./ShadersInclude/imageProcessingFunctions.js";
+import "./ShadersInclude/clipPlaneFragment.js";
+var name = "particlesPixelShader";
+var shader = "varying vec2 vUV;\nvarying vec4 vColor;\nuniform vec4 textureMask;\nuniform sampler2D diffuseSampler;\n#include<clipPlaneFragmentDeclaration>\n#include<imageProcessingDeclaration>\n#include<helperFunctions>\n#include<imageProcessingFunctions>\n#ifdef RAMPGRADIENT\nvarying vec4 remapRanges;\nuniform sampler2D rampSampler;\n#endif\n#define CUSTOM_FRAGMENT_DEFINITIONS\nvoid main(void) {\n#define CUSTOM_FRAGMENT_MAIN_BEGIN\n#include<clipPlaneFragment>\nvec4 textureColor=texture2D(diffuseSampler,vUV);\nvec4 baseColor=(textureColor*textureMask+(vec4(1.,1.,1.,1.)-textureMask))*vColor;\n#ifdef RAMPGRADIENT\nfloat alpha=baseColor.a;\nfloat remappedColorIndex=clamp((alpha-remapRanges.x)/remapRanges.y,0.0,1.0);\nvec4 rampColor=texture2D(rampSampler,vec2(1.0-remappedColorIndex,0.));\nbaseColor.rgb*=rampColor.rgb;\nfloat finalAlpha=baseColor.a;\nbaseColor.a=clamp((alpha*rampColor.a-remapRanges.z)/remapRanges.w,0.0,1.0);\n#endif\n#ifdef BLENDMULTIPLYMODE\nfloat sourceAlpha=vColor.a*textureColor.a;\nbaseColor.rgb=baseColor.rgb*sourceAlpha+vec3(1.0)*(1.0-sourceAlpha);\n#endif\n#ifdef IMAGEPROCESSINGPOSTPROCESS\nbaseColor.rgb=toLinearSpace(baseColor.rgb);\n#else\n#ifdef IMAGEPROCESSING\nbaseColor.rgb=toLinearSpace(baseColor.rgb);\nbaseColor=applyImageProcessing(baseColor);\n#endif\n#endif\ngl_FragColor=baseColor;\n#define CUSTOM_FRAGMENT_MAIN_END\n}";
+// Sideeffect
+ShaderStore.ShadersStore[name] = shader;
+/** @hidden */
+export var particlesPixelShader = { name: name, shader: shader };
+//# sourceMappingURL=particles.fragment.js.map
